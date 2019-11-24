@@ -1,0 +1,175 @@
+#include "game.h"
+
+void Menu()
+{
+	printf("###########################\n");
+	printf("### 欢迎来到三子棋游戏！###\n");
+	printf("###########################\n");
+	printf("### 1：Play      2:Exit ###\n");
+	printf("###########################\n");
+	printf("### SELECT->> #############\n");
+}
+
+void play()
+{
+	srand(time(NULL));
+	char board[ROW][COL];
+	char result = 0;
+	InitBoard(board,ROW,COL);
+	do {
+		ShowBoard(board, ROW, COL);
+		printf("请落子！\n");
+		int x = 0;
+		int y = 0;
+		scanf("%d %d", &x, &y);
+		if (x > 3 || x <= 0 || y > 3 || y <= 0)
+		{
+			printf("您输入的位置有误，请重新输入！\n");
+			continue;
+		}
+		if (board[x - 1][y - 1] != ' ')
+		{
+			printf("该位置已被占用，请重新输入！\n");
+			continue;
+		}
+		board[x - 1][y - 1] = P_COLOR;
+		result=Judge(board, ROW, COL);
+		if (result != 'N')   //N->NEXT;F->FULL;
+		{
+			break;
+		}
+		ComputerMove(board, ROW, COL);
+		result = Judge(board, ROW, COL);
+		if (result != 'N')
+		{
+			break;
+		}
+
+	} while (1);
+	if (result = P_COLOR)
+	{
+		printf("恭喜你，你赢了！\n");
+	}
+	else if (result = C_COLOR)
+	{
+		printf("很遗憾，你输了！\n");
+	}
+	else
+	{
+		printf("还不错，平局！\n");
+	}
+	printf("你玩的还不错，要不要再来一局？\n");
+}
+
+void InitBoard(char board[][COL], int row, int col)
+{
+	for (int i = 0; i < row; i++)
+	{
+		for (int j = 0; j < col; j++)
+		{
+			board[i][j] = ' ';
+		}
+	}
+}
+
+void ShowBoard(char board[][COL], int row, int col)
+{
+	printf("      1   2   3  \n");
+	printf("    -------------\n");
+	for (int i = 0; i < row; i++)
+	{
+		printf(" %d  |",i+1);
+		for (int j = 0; j < col; j++)
+		{
+			printf(" %c |", board[i][j]);
+		}
+		printf("\n");
+		printf("    -------------\n");
+	}
+
+}
+
+void ComputerMove(char board[][COL], int row, int col)
+{
+	int x = rand() % 3 + 1;
+	int y = rand() % 3 + 1;
+	while (1)
+	{
+		if (board[x][y] == ' ')
+		{
+			board[x][y] = C_COLOR;
+			break;
+		}
+		else
+		{
+			x = rand() % 3 + 1;
+			y = rand() % 3 + 1;
+			continue;
+		}
+	}
+}
+char Judge(char board[][COL], int row, int col)   
+{         //N->NEXT;F->FULL;
+	
+	for (int i = 0; i < row; i++)  //行
+	{
+		if (board[i][0] != ' '&&board[i][0] == board[i][1] && board[i][0] == board[i][2])
+		{
+			if (board[i][0] == P_COLOR)
+			{
+				return P_COLOR;
+			}
+			else
+			{
+				return C_COLOR;
+			}
+		}
+	}
+	for (int j = 0; j < col; j++)    //列
+	{
+		if (board[0][j] != ' '&&board[0][j] == board[1][j] && board[0][j] == board[2][j])
+		{
+			if (board[0][j] == P_COLOR)
+			{
+				return P_COLOR;
+			}
+			else
+			{
+				return C_COLOR;
+			}
+		}
+	}
+	if (board[1][1] != ' '&&board[1][1] == board[0][0] && board[1][1] == board[2][2])
+	{
+		if (board[1][1] == P_COLOR)         //右斜
+		{
+			return P_COLOR;
+		}
+		else
+		{
+			return C_COLOR;
+		}
+	}
+	if (board[1][1] != ' '&&board[1][1] == board[0][2] && board[1][1] == board[2][0])
+	{
+		if (board[1][1] == P_COLOR)
+		{
+			return P_COLOR;
+		}
+		else
+		{
+			return C_COLOR;
+		}
+	}
+	for (int i = 0; i < ROW; i++)
+	{
+		for (int j = 0; j < COL; j++)
+		{
+			if (board[i][j] == ' ')
+			{
+				return 'N';
+			}
+		}
+	}
+	return 'F';
+}
