@@ -1,0 +1,112 @@
+#include "game.h"
+
+void Menu() {
+	printf("###################################\n");
+	printf("#### 欢 迎 来 到 扫 雷 游 戏   ####\n");
+	printf("###################################\n");
+	printf("####  1：Play        2：Exit  #####\n");
+	printf("###################################\n");
+	printf("####  Select->>             #######\n");
+}
+
+void SetMine(char mine_board[][COL], int row, int col,int *x_p,int *y_p)
+{
+	int count = (row-2) * (col-2) / 5;
+	while (count)
+	{
+		int x = rand() % 10 + 1;
+		int y = rand() % 10 + 1;
+		if (mine_board[x][y] != '0')
+		{
+			continue;
+		}
+		mine_board[x][y] = THUNDER;
+		count--;
+	}
+	for (int i = 1; i <= 10; i++)
+	{
+		for (int j = 1; j <= 10; j++)
+		{
+			if (mine_board[i][j] == '0')
+			{
+				*x_p = i;
+				*y_p = j;
+				break;
+			}
+		}
+	}
+}
+
+void ShowBoard(char board[][COL], int row, int col)
+{
+	printf("       1    2    3    4    5    6    7    8    9    10 \n");
+	printf("     ---------------------------------------------------\n");
+	for (int i = 1; i < row-1; i++)
+	{
+		printf(" %2d  |", i );
+		for (int j = 1; j < col-1; j++)
+		{
+			printf(" %2c |", board[i][j]);
+		}
+		printf("\n");
+		printf("     ---------------------------------------------------\n");
+	}
+}
+
+int GetCount(char board[][COL], int x, int y)
+{
+	return board[x - 1][y - 1] + board[x - 1][y] + board[x - 1][y + 1] + board[x][y - 1] + \
+		board[x][y + 1] + board[x + 1][y - 1] + board[x + 1][y] + board[x + 1][y + 1]-8*'0';
+}
+
+
+
+void Play()
+{
+	srand((unsigned int) time(NULL));
+	char mine_board[ROW][COL];
+	char show_board[ROW][COL];
+	memset(mine_board, '0', sizeof(mine_board));
+	memset(show_board, '*', sizeof(show_board));
+	int no_x=1;
+	int no_y=1;
+	SetMine(mine_board, ROW, COL,&no_x,&no_y);
+	int times= (ROW - 2) * (COL - 2)*4 / 5;
+	int x = 0;
+	int y = 0;
+	do {
+		system("cls");
+		ShowBoard(show_board, ROW, COL);
+		printf("Please Enter<x,y>:");
+		scanf("%d %d", &x, &y);
+		if (x <= 0 || x > 10 || y <= 0 || y > 10)
+		{
+			printf("您的输入有误，请重新输入！\n");
+			continue;
+		}
+		if (mine_board[x][y]!='0'&&mine_board[x][y]!=THUNDER)
+		{
+			printf("此位置已扫过，请重新输入！\n");
+			continue;
+		}
+		if (mine_board[x][y] == THUNDER)
+		{
+			if (times == (ROW - 2) * (COL - 2) * 4 / 5)
+			{
+				mine_board[x][y] = '0';
+				mine_board[no_x][no_y] = '1';
+			}
+			else {
+				system("cls");
+				printf("很遗憾，你输了！\n");
+				ShowBoard(mine_board, ROW, COL);
+				break;
+			}
+		}
+		int count = GetCount(mine_board, x,y);
+		show_board[x][y] =count+'0';
+		times--;
+	} while (times>0);	
+	printf("你玩的还不错，要不要再来一局？\n");
+}
+
