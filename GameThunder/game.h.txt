@@ -1,0 +1,22 @@
+#pragma once
+#ifndef _GAME_H_
+#define _GAME_H_
+
+#include <stdio.h>
+#include <time.h>
+#include <string.h>
+#include <windows.h>
+
+#pragma warning(disable:4996)
+
+#define ROW 12
+#define COL 12
+#define THUNDER '1'
+
+void Play();
+void Menu();
+void ShowBoard(char board[][COL], int row, int col);
+void SetMine(char board[][COL], int row, int col);
+int GetCount(char board[][COL], int x, int y);
+
+#endif // !1
