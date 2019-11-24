@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <windows.h>
+#pragma warning(disable:4996)
+
+void f(unsigned int value)
+{
+	for (int i = 31; i >= 0; i--)
+	{
+		if (value&(1 << i))
+		{
+			printf("1");
+		}
+		else
+		{
+			printf("0");
+		}
+	}
+}
+
+int main()
+{
+	//3. 输出一个整数的每一位。
+	
+	f(0x55555555);
+
+	system("pause");
+	return 0;
+}
